@@ -1,0 +1,91 @@
+
+{% extends "base.html" %}
+
+
+{% block content %}
+    {% block before_posts %}
+    {% endblock %}
+    <div>
+        {% if posts|length == 0 %}
+            <p>There isn't any post, unfortunatelly.</p>
+        {% endif %}
+        {% for post in posts %}
+        <div class="card border-dark">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <a href="/posts/{{post.user.username}}">{{post.user.username}}</a>
+                <div>
+
+                    {% if current_user.id in post.likes|map(attribute="user_id") %}
+                        <a href="/like/{{post.id}}"><i class="fa-solid fa-heart"></i></a>
+                    {% else %}
+                        <a href="/like/{{post.id}}"><i class="fa-regular fa-heart"></i></a>
+                    {% endif %}
+                    {{post.likes|length}}
+                    {% if  current_user.id == post.user_id %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown"></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="/delete_post/{{post.id}}" class="dropdown-item">Delete</a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    {{post.text}}
+                </div>
+                <br>
+
+                <div class="collapse" id="comments-{{post.id}}">
+                    <div class="card">
+                        <div class="card-body" id="comment-expanded-{{post.id}}">
+                            {% for comment in post.comments%}
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <a href="{{ url_for('views.posts', username=comment.user.username) }}">{{comment.user.username}}</a>:
+                                        {{comment.text}}
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">{{comment.date_created}}</small>
+                                        {% if current_user.id == comment.user_id or current_user.id == post.user_id%}
+                                        <a href="/delete_comment/{{comment.id}}" ><button type="button" class="btn-close" data-bs-dismiss="alert"></button></a>
+                                        <!-- <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown"></button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/delete_comment/{{comment.id}}" class="dropdown-item">Delete</a></li>
+                                            </ul>
+                                        </div> -->
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <p class="card-text">
+                    {% if post.comments|length > 0 %}
+                        <a data-bs-toggle="collapse" href="#comments-{{post.id}}" role="button">
+                            <small>View {{post.comments|length}} Comments</small>
+                        </a>
+                    {% else %}
+                        <small class="text-muted">No Comments</small>
+                    {% endif %}
+                </p>
+
+                <form action="/new_comment/{{post.id}}" method="POST" class="input-group mb-3">
+                    <input type="text" id="text" name="text" class="form-control" placeholder="Comment ...">
+                    <button type="submit" class="btn btn-primary">Comment</button>
+                </form>
+            </div>
+            <div class="card-footer text-muted">
+                {{post.date_created}}
+            </div>
+        </div>
+        <br>
+        {% endfor %}
+    </div>
+    {% block after_posts %}
+    {% endblock %}
+{% endblock %}

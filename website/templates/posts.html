@@ -1,0 +1,17 @@
+
+{% extends "posts_div.html" %}
+
+
+{% block title %}
+{{username}}'s Posts
+{%endblock%}
+
+{% block before_posts %}
+    <h1 align="center">{{username}}'s Posts</h1>
+    <div align="center">
+        <a href="{{ url_for('views.index') }}">
+            <button type="button" class="btn btn-lg btn-secondary">Back </button>
+        </a>
+    </div>
+    <br>
+{% endblock %}
