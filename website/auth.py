@@ -8,7 +8,6 @@ auth = Blueprint("auth", __name__)
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
-    print(current_user)
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
