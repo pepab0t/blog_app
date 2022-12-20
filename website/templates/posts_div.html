@@ -16,11 +16,12 @@
                 <div>
 
                     {% if current_user.id in post.likes|map(attribute="user_id") %}
-                        <i class="fa-solid fa-heart" id="like-button-{{post.id}}" onclick="like({{post.id}})">
+                        <i class="fa-solid fa-heart" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
                     {% else %}
                         <i class="fa-regular fa-heart" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
                     {% endif %}
                     <span id="likes-count-{{post.id}}">{{post.likes|length}}</span>
+
                     {% if  current_user.id == post.user_id %}
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown"></button>

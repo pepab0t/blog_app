@@ -117,4 +117,4 @@ def like(post_id: int):
         db.session.commit()
 
 
-    return jsonify({"likes": len(post.likes), "liked": current_user.id in map(lambda x: x.user_id,post.likes)}) # type: ignore
+    return jsonify({"likes": len(post.likes), "liked": current_user.id in map(lambda x: x.user_id, post.likes)}) # type: ignore
