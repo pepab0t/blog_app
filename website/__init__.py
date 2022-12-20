@@ -32,7 +32,7 @@ def create_app() -> Flask:
     return app
 
 def create_database(app: Flask):
-    if not (Path("instance") / DB_NAME).exists():
+    if not (Path(__file__).parent.parent.resolve()/ "instance" / DB_NAME).exists():
         with app.app_context():
             db.create_all()
         print("Created database!")
