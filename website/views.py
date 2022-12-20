@@ -1,5 +1,5 @@
 
-from flask import Blueprint, render_template, request, redirect, flash, url_for
+from flask import Blueprint, render_template, request, redirect, flash, url_for, jsonify
 from flask_login import login_required, current_user
 from .models import Post, User, Comment, Like
 from . import db
@@ -100,14 +100,14 @@ def delete_comment(id: int):
     return redirect(url_for("views.index"))
 
 
-@views.route("/like/<int:post_id>")
+@views.route("/like/<int:post_id>", methods=["POST"])
 @login_required
 def like(post_id: int):
     post = Post.query.get(post_id)
     like = Like.query.filter_by(user_id=current_user.id, post_id=post_id).first() # type: ignore
 
     if post is None:
-        flash("Post does not exist", category="error")
+        return jsonify({"error": "post does not exist"}, 400)
     elif like is not None:
         db.session.delete(like)
         db.session.commit()
@@ -117,4 +117,4 @@ def like(post_id: int):
         db.session.commit()
 
 
-    return redirect(url_for("views.index"))
+    return jsonify({"likes": len(post.likes), "liked": current_user.id in map(lambda x: x.user_id,post.likes)}) # type: ignore
